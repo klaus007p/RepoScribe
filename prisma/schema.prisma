@@ -15,3 +15,119 @@ datasource db {
 }
 
 
+
+enum RepositoryScanStatus {
+  PENDING
+  READY
+  FAILED
+}
+
+enum DocumentType {
+  README
+  API
+}
+
+enum DraftStatus {
+  GENERATED
+  EDITED
+}
+
+enum AIProvider {
+  OLLAMA
+  OPENROUTER
+}
+
+
+enum FeedbackRating {
+  USEFUL
+  PARTIALLY_USEFUL
+  NOT_USEFUL
+}
+
+enum FeedbackReason {
+  FACTUALLY_INCORRECT
+  MISSING_INFORMATION
+  WRONG_API_ROUTE
+  POOR_FORMATTING
+  OTHER
+}
+
+
+model RepositoryScan {
+
+  id                  String                @id @default(cuid())
+  owner               String                @db.VarChar(100)
+  repository          String                @db.VarChar(100)
+  repositoryUrl       String                @db.VarChar(500)
+  requestedRef        String?               @db.VarChar(255)
+  resolvedRef         String?               @db.VarChar(255)
+  commitSha           String?               @db.VarChar(64)
+  defaultBranch       String?               @db.VarChar(255)
+
+  accessTokenHash     String                @unique @db.VarChar(64)
+  status              RepositoryScanStatus  @default(PENDING)
+
+  repositoryFacts     Json?
+  fileManifest        Json?
+  detectedStack       Json?
+  warnings            Json?
+
+
+  filesScanned        Int             @default(0)
+  filesSkipped        Int             @default(0)
+  errorCode           String?         @db.VarChar(80)
+
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  expiresAt           DateTime       
+
+
+  drafts              DocumentationDraft[]
+  
+  @@index([owner, repository, createdAt])
+  @@index([expiresAt])
+  
+}
+
+
+model DocumentationDraft {
+  id                    String                 @id @default(cuid())
+  scanId                String
+
+  type                  DocumentType
+  status                DraftStatus            @default(GENERATED)
+  contentMarkdown       String                 @db.Text
+  sourceReferences      Json?
+  warnings              Json?
+
+  provider              AIProvider?
+  modelId               String?                @db.VarChar(200)
+  promptVersion         String?                @db.VarChar(50)
+  durationMs            Int?
+  inputTokens           Int?
+  outputTokens          Int?
+
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  expiresAt             DateTime
+
+  scan                  RepositoryScan         @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  feedback              Feedback[]
+
+  @@index([scanId, type, createdAt])
+  @@index([expiresAt])
+}
+  
+
+model Feedback {
+  id            String             @id @default(cuid())
+  draftId       String             @unique
+  rating        FeedbackRating
+  reason        FeedbackReason?
+  comment       String?            @db.VarChar(500)
+  wouldUseAgain Boolean?
+
+  createdAt     DateTime           @default(now())
+
+  draft         DocumentationDraft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+}
