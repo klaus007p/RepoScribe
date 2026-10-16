@@ -1,5 +1,5 @@
 import { LIMITS } from "@/lib/config";
-import { AppError } from "@/lib/http/errors";
+import { AppError } from "@/lib/http/error";
 import { githubFetch, encodeRef } from "./client";
 
 interface RepoResponse {
