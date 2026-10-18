@@ -40,7 +40,16 @@ export async function githubFetch<T>(path: string): Promise<T> {
     if (res.status === 403 || res.status === 429) {
         const remaining = res.headers.get("x-ratelimit-remaining");
         if (remaining === "0" || res.status === 429) {
-            throw new AppError("RATE_LIMITED", 429, "GitHub rate limit reached. Try again later.", true);
+            const reset = Number(res.headers.get("x-ratelimit-reset"));
+            const minutes = reset ? Math.max(1, Math.ceil((reset * 1000 - Date.now()) / 60000)) : null;
+            throw new AppError(
+                "RATE_LIMITED",
+                429,
+                minutes
+                    ? `GitHub rate limit reached. Try again in about ${minutes} minute(s).`
+                    : "GitHub rate limit reached. Try again later.",
+                true,
+            );
         }
         throw new AppError("NOT_FOUND", 404, "This repository is not accessible.");
     }
