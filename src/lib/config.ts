@@ -2,12 +2,17 @@
 
 
 export const LIMITS = {
-    maxTreeEntries : 10_000,
+    maxTreeEntries: 10_000,
     maxFilesSelected: 200,
     maxFileBytes: 100 * 1024,
     maxTotalSourceBytes: 2 * 1024 * 1024,
     githubTimeoutMs: 10_000,
-    
 } as const;
 
+export const RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
 
+const isProd = process.env.NODE_ENV === "production";
+
+export const RATE_LIMITS = {
+    inspect: { limit: isProd ? 5 : 100, windowMs: 10 * 60_000 },
+} as const;
