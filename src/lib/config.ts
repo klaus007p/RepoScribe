@@ -9,6 +9,15 @@ export const LIMITS = {
     githubTimeoutMs: 10_000,
 } as const;
 
+export const AI = {
+    maxPromptChars: 40_000,
+    maxOutputTokens: 4096,
+    ollamaNumCtx: 16384,
+    ollamaTimeoutMs: 180_000,
+    openrouterTimeoutMs: 90_000,
+    temperature: 0.2,
+} as const;
+
 export const RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
 
 const isProd = process.env.NODE_ENV === "production";

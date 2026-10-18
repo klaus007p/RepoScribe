@@ -5,8 +5,7 @@ import { errorResponse } from "@/lib/http/error";
 import { buildScanResponse, parseStoredFacts } from "@/lib/repository/scan.response";
 import { authorizeScan } from "@/lib/security/authorize-scan";
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+
 
 type Ctx = { params: Promise<{ scanId: string }> };
 

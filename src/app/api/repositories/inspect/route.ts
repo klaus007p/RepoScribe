@@ -12,8 +12,7 @@ import { buildScanResponse } from "@/lib/repository/scan.response";
 import { generateAccessToken } from "@/lib/security/capability-token";
 import { clientKey, rateLimit } from "@/lib/security/rate-limit";
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+
 export const maxDuration = 60;
 
 const bodySchema = z.object({
