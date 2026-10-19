@@ -45,7 +45,7 @@ export class OllamaProvider implements DocumentationAIProvider {
             const timeout = err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError");
             throw new AppError(
                 "PROVIDER_UNAVAILABLE",
-                500,
+                503,
                 timeout
                     ? "The local model took too long to respond. Try a smaller model."
                     : "Could not reach Ollama. Check that it is running.",
