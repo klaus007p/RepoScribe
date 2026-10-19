@@ -113,3 +113,4 @@ export function buildMessages(input: DocumentationAIInput): ChatMessage[] {
         { role: "user", content: parts.join("\n\n") },
     ];
 }
+
