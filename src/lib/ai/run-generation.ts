@@ -8,7 +8,7 @@ import type {
     GeneratedDocumentation,
     GenerationMeta,
 } from "./provider";
-import App from "next/app";
+
 
 
 export type ChatFn = (messages: ChatMessage[]) => Promise<ChatCompletion>;
