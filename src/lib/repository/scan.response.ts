@@ -1,10 +1,21 @@
 import type { RepositoryScan } from "@prisma/client";
 import { AppError } from "@/lib/http/error";
-import { repositoryFactsSchema, type RepositoryFacts } from "@/lib/validation/repository-schemas";
+import {
+    fileManifestSchema,
+    repositoryFactsSchema,
+    type FileManifest,
+    type RepositoryFacts,
+} from "@/lib/validation/repository-schemas";
 
 export function parseStoredFacts(scan: RepositoryScan): RepositoryFacts {
     const r = repositoryFactsSchema.safeParse(scan.repositoryFacts);
     if (!r.success) throw new AppError("INTERNAL_ERROR", 500, "Stored scan data is invalid.");
+    return r.data;
+}
+
+export function parseStoredManifest(scan: RepositoryScan): FileManifest {
+    const r = fileManifestSchema.safeParse(scan.fileManifest);
+    if(!r.success) throw new AppError("INTERNAL_ERROR", 500, "Stored scan data is invalid.");
     return r.data;
 }
 

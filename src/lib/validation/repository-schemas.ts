@@ -86,4 +86,12 @@ export const repositoryFactsSchema = z.object({
     }),
     warnings: z.array(z.string()),
 });
+
+export const fileManifestSchema = z.object({
+    selected: z.array(z.object({ path: z.string(), sha: z.string(), size: z.number().int() })),
+    treePaths: z.array(z.string()),
+});
+
+export type FileManifest = z.infer<typeof fileManifestSchema>;
+
 export type RepositoryFacts = z.infer<typeof repositoryFactsSchema>;
