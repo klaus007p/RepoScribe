@@ -24,7 +24,8 @@ export function errorResponse(err: unknown, requestId = randomUUID()) {
             { status: err.status },
         );
     }
-    console.error(`[${requestId}] unexpected error`, err instanceof Error ? err.name : "unknown");
+    console.error(`[${requestId}] unexpected error`,
+        process.env.NODE_ENV === "production" ? (err instanceof Error ? err.name : "unknown") : err,);
     return NextResponse.json(
         { error: { code: "INTERNAL_ERROR", message: "Something went wrong.", retryable: true, requestId } },
         { status: 500 },
