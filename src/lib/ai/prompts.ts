@@ -40,6 +40,8 @@ Do not add badges, demo links or screenshots.`,
 If no routes were detected, write a short note explaining that no supported routes were found and do not invent any.`,
 };
 
+const SECTION_TASK = `Rewrite ONLY the document section provided in <existing_document>. Use the repository facts and source excerpts to make it accurate and clear. Return the complete replacement section in "markdown": it must begin with the same heading line (same text and level) and contain no other sections. Do not add content that belongs to other sections.`;
+
 const BLOCK_TAG_RE = /<\/(repository_data|existing_document|user_instructions)>/gi;
 
 function neutralize(text: string): string {
@@ -101,7 +103,7 @@ export function buildMessages(input: DocumentationAIInput): ChatMessage[] {
     }
 
     const parts = [
-        `TASK:\n${TASKS[input.documentType]}`,
+        `TASK:\n${input.mode === "section" ? SECTION_TASK : TASKS[input.documentType]}`,
         `<repository_data>\nFACTS (JSON):\n${factsJson}\n\nSOURCE EXCERPTS:\n${excerpts.join("\n") || "(none)"}${omitted ? `\n(${omitted} excerpt(s) omitted to fit the context limit)` : ""
         }\n</repository_data>`,
     ];

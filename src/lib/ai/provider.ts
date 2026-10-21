@@ -10,6 +10,7 @@ export interface DocumentationAIInput {
     sourceExcerpts: SourceExcerpt[];
     existingMarkdown?: string;
     userInstructions?: string;
+    mode?: "full" | "section";
 }
 
 export interface GenerationMeta {
