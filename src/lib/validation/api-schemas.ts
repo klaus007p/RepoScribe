@@ -32,3 +32,13 @@ export const regenerateBodySchema = z.object({
     instructions: optionalInstructions,
     consentHostedInference: z.boolean().optional(),
 });
+
+export const feedbackBodySchema = z.object({
+    draftId: z.string().min(1).max(64),
+    rating: z.enum(["USEFUL", "PARTIALLY_USEFUL", "NOT_USEFUL"]),
+    reason: z
+        .enum(["FACTUALLY_INCORRECT", "MISSING_INFORMATION", "WRONG_API_ROUTE", "POOR_FORMATTING", "OTHER"])
+        .optional(),
+    comment: z.string().trim().max(500).optional(),
+    wouldUseAgain: z.boolean().optional(),
+});
