@@ -28,6 +28,77 @@ export interface ScanResponse {
     sessionToken?: string;
 }
 
+
+export interface SourceRef {
+    filePath: string;
+    startLine?: number;
+    endLine?: number;
+    claim: string;
+}
+export interface DraftResponse {
+    id: string;
+    scanId: string;
+    type: DocType;
+    status: "GENERATED" | "EDITED";
+    contentMarkdown: string;
+    sourceReferences: SourceRef[];
+    warnings: string[];
+    model: { provider: string; modelId: string | null; promptVersion: string | null } | null;
+    updatedAt: string;
+}
+
+export const getDraft = (draftId: string, token: string) =>
+    request<DraftResponse>(`/api/documentation/${encodeURIComponent(draftId)}`, {}, token);
+
+export const saveDraft = (draftId: string, contentMarkdown: string, token: string) =>
+    request<DraftResponse>(
+        `/api/documentation/${encodeURIComponent(draftId)}`,
+        { method: "PATCH", body: JSON.stringify({ contentMarkdown }) },
+        token,
+    );
+
+export const regenerateSection = (
+    draftId: string,
+    body: { headingPath: string; instructions?: string; consentHostedInference?: boolean },
+    token: string,
+) =>
+    request<DraftResponse>(
+        `/api/documentation/${encodeURIComponent(draftId)}/regenerate-section`,
+        { method: "POST", body: JSON.stringify(body) },
+        token,
+    );
+
+export const sendFeedback = (
+    body: {
+        draftId: string;
+        rating: "USEFUL" | "PARTIALLY_USEFUL" | "NOT_USEFUL";
+        reason?: string;
+        comment?: string;
+        wouldUseAgain?: boolean;
+    },
+    token: string,
+) => request<{ saved: boolean }>("/api/feedback", { method: "POST", body: JSON.stringify(body) }, token);
+
+// The review page only knows a draft id, so the token is found through the scan it belongs to.
+export function findTokenForScan(scanId: string): string | null {
+    return getToken(scanId);
+}
+export function findScanIdForDraft(draftId: string): string | null {
+    try {
+        for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            if (!key?.startsWith("reposcribe:drafts:")) continue;
+            const map = JSON.parse(sessionStorage.getItem(key) ?? "{}") as Record<string, string>;
+            if (Object.values(map).includes(draftId)) return key.slice("reposcribe:drafts:".length);
+        }
+    } catch {
+        /* ignore */
+    }
+    return null;
+}
+
+
+
 export type DocType = "README" | "API";
 export interface DraftSummary {
     id: string;

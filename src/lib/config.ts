@@ -29,4 +29,5 @@ export const RATE_LIMITS = {
     generate: { limit: isProd ? 10 : 100, windowMs: 10 * 60_000 },
     regenerate: { limit: isProd ? 30 : 200, windowMs: 10 * 60_000 },
     edit: { limit: isProd ? 120 : 1000, windowMs: 10 * 60_000 },
+      feedback: { limit: isProd ? 30 : 200, windowMs: 10 * 60_000 },
 } as const;
