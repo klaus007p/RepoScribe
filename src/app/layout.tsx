@@ -1,38 +1,31 @@
-
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from "next";
 import Link from "next/link";
+import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata = {
+export const metadata: Metadata = {
   title: "RepoScribe",
   description: "Evidence-based README and API documentation for public GitHub repositories.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className="dark">
       <body className="min-h-screen antialiased">
-        <header className="border-b border-neutral-200 dark:border-neutral-800">
+        <header className="sticky top-0 z-10 border-b border-white/10 bg-neutral-950/70 backdrop-blur">
           <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-            <Link href="/" className="font-semibold tracking-tight">RepoScribe</Link>
-            <span className="text-xs text-neutral-500">Open-weight documentation drafts</span>
+            <Link href="/" className="flex items-center gap-2.5 font-semibold tracking-tight">
+              <span className="grid h-7 w-7 place-items-center rounded-md bg-emerald-400 font-mono text-sm font-bold text-neutral-950">
+                R
+              </span>
+              RepoScribe
+            </Link>
+            <span className="hidden text-xs text-neutral-400 sm:block">Open-weight documentation drafts</span>
           </nav>
         </header>
+
         {children}
-        <footer className="mx-auto max-w-6xl px-4 py-8 text-xs text-neutral-500">
+
+        <footer className="mx-auto max-w-6xl px-4 py-10 text-xs text-neutral-500">
           Drafts are AI-generated from repository facts. Review before publishing. Scans are deleted after 7 days.
         </footer>
       </body>
