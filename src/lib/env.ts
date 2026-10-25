@@ -10,6 +10,9 @@ const envSchema = z
         OPENROUTER_API_KEY: z.string().optional(),
         OPENROUTER_MODEL: z.string().optional(),
         APP_URL: z.string().url().default("http://localhost:3000"),
+        UPSTASH_REDIS_REST_URL: z.preprocess((v) => (v === "" ? undefined : v), z.string().url().optional()),
+        UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+        CRON_SECRET: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(16).optional()),
     })
     .superRefine((v, ctx) => {
         if (v.AI_PROVIDER === "openrouter") {
